@@ -13,14 +13,18 @@ class Notif implements ActionInterface
     protected $resultJsonFactory;
 
     protected $_pageFactory;
+	
+	protected $logger;
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $pageFactory,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory)
+        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
+		\Psr\Log\LoggerInterface $logger)
     {
         $this->_pageFactory = $pageFactory;
         $this->resultJsonFactory = $resultJsonFactory;
+		$this->logger = $logger;
         return parent::__construct($context);
     }
 
@@ -35,6 +39,10 @@ class Notif implements ActionInterface
 
         $resultJson = $this->resultJsonFactory->create();
         $resultJson->setData(array_merge($customerData, $customerId));
+		
+		$this->_logger->debug(print_r($resultJson));
+		
+		return $resultJson;
     }
 
     public function getOrder(\Magento\Framework\Event\Observer $observer)
